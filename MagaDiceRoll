@@ -1,0 +1,145 @@
+import random
+import time
+
+#Below is the number bank in ASCII and Intro
+def numBank(val):
+    if val == 0:
+        return '    ___   ','   / _ \  ','  | | | | ','  | | | | ','  | |_| | ','   \___/  '
+    elif val == 1:
+        return '    __    ','   /_ |   ','    | |   ','    | |   ','    | |   ','    |_|   '
+    elif val == 2:
+        return '    ___   ','   |__ \  ','     , |  ','    / /   ','   / /_   ','  |____|  '
+    elif val == 3:
+        return '   ____   ','  |___ \  ','    __, | ','   |__ <  ','   ___, | ','  |____/  '
+    elif val == 4:
+        return '  _  _    ',' | || |   ',' | || |_  ',' |__   _| ','    | |   ','    |_|   '
+    elif val ==5:
+        return '  _____   ',' | ____|  ',' | |__    ',' |___ \   ','  ___, |  ',' |____/   '
+    elif val == 6:
+        return '    __    ','   / /    ','  / /_    ',' | \'_ \   ',' | (_, |  ','  \___/   '
+    elif val == 7:
+        return '  ______  ',' |____  | ','     / /  ','    / /   ','   / /    ','  /_/     '
+    elif val == 8:
+        return '   ___    ','  / _ \   ',' | (_, |  ','  > _ <   ',' | (_, |  ','  \___/   '
+    elif val == 9:
+        return '   ___    ','  / _ \   ',' | (_, |  ','  \__, |  ','    / /   ','   /_/    '
+
+def intro():
+    print('=================================================================')
+    print('|                         _______                               |')
+    print('|                        /\ o o o\\                              |')
+    print('|                       /o \ o o o\_______                      |')
+    print('|                      <    >------>   o /|                     |')
+    print('|                       \ o/  o   /_____/o|                     |')
+    print('|                        \/______/     |oo|                     |')
+    print('|                               |   o   |o/                     |')
+    print('|                               |_______|/                      |')
+    print('=================================================================')
+    print('      ___  ___  _    _      _____ _  _ ___   ___ ___ ___ ___     ')
+    print('     | _ \/ _ \| |  | |    |_   _| || | __| |   |_ _/ __| __|    ')
+    print('     |   | (_) | |__| |__    | | | __ | _|  | |) | | (__| _|     ')
+    print('     |_|_\\\___/|____|____|   |_| |_||_|___| |___|___\___|___|    ')
+    print()
+	
+def spacer():
+    print()
+    print()
+	
+#Definitions
+#Searches number data base and prepares it for concatenation
+def numBankSearch(comList , randNum):
+	randNum = list(str(randNum))
+	indx = 0
+	for indx in range(len(randNum)):
+		comList[indx::len(randNum)] = list(numBank(int(randNum[indx])))
+		indx += 1
+	
+	comList = ''.join(comList)
+	return comList
+	
+#Concatenates list into final print output
+def combine(list , lenght):
+	if len(list) <= lenght:
+		return list
+	else:
+		return list[:lenght] + '\n' + combine(list[lenght:] , lenght)
+
+#Mimics loading time to prevent spamming 
+def loading(word , var , seconds , loopAmount):
+    print(word , end = '')
+    for var in range(loopAmount):
+        print('.' , end = '')
+        time.sleep(seconds)
+        var += 1
+    if var == loopAmount:
+        print('.')
+		
+#Values used for calculation
+diceMax = 0 #sets max limit to dice roll, used as separate value to re-roll dice
+ranNum = 0 #used to store the random.randint data before output
+ranLen = 0 #used to store the length of the random value
+restart = 0
+opVar = 0
+reRoll = 0
+finalList = []
+tempList = []
+disc = 'Enter how many sides you want your dice to have: '
+conf = ['You have selected a ' , ' sided dice.' , 'Press ENTER to roll']
+options = 'Enter 1 to roll same dice again. Enter 2 to choose different dice. Enter 3 to stop script.'
+error = 'Only numbers are allowed, please enter a proper input.'
+opError = 'Invalid user input'
+scStop = 'The script has been terminated.'
+
+
+while restart == 0:
+	while reRoll == 0:
+		intro() 
+		print(disc , end = '')
+		reRoll = 1 #allows program to proceed to next set, used for re roll functionality
+		diceMax = input()
+	
+	while reRoll == 1:
+		print(conf[0] + str(diceMax) + conf[1])
+		loading('Thinking' , 0 , .5 , 4)
+		ranNum = diceMax
+		
+		try:
+			ranNum = random.randint(1 , int(ranNum))
+			ranLen = int(len(str(ranNum)))
+			print(ranNum)
+			finalList = ['none'] * (len(str(ranNum)) * len(list(numBank(0)))) #populates the list value with empty spaces matching length of final output	
+			finalList = numBankSearch(finalList , ranNum)
+			finalList = combine(finalList , (ranLen * 10))
+			print(finalList)
+			spacer()
+			reRoll = 2
+			
+		except ValueError:
+			print()
+			print(error)
+			reRoll = 0
+			restart = 0
+		
+		
+	while reRoll == 2:
+		print(options)
+		opVar = input()
+		try:
+			if int(opVar) == 1:
+				reRoll = 1
+				finalList = []
+
+			elif int(opVar) == 2:
+				reRoll = 0
+			   
+			elif int(opVar) == 3:
+				print(scStop)
+				restart = 1
+				reRoll = 3
+			else:
+				print()
+				print(opError)
+               
+		except ValueError:
+			print()
+			print(opError)
